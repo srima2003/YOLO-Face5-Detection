@@ -1,11 +1,14 @@
 import React, { useRef, useEffect } from "react";
 
+  const backendUrl = "ws://yolo-face-detection.com:8000/ws";
+
 export default function CameraDetection() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8000/ws");
+    // const ws = new WebSocket("ws://localhost:8000/ws");
+    const ws = new WebSocket(backendUrl)
     let frameCount = 0;
 
     async function setupCamera() {
