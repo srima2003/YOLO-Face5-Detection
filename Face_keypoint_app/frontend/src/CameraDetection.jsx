@@ -3,10 +3,10 @@ import React, { useRef, useEffect } from "react";
 export default function CameraDetection() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  let frameCount = 0;
-
+  
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8000/ws");
+    let frameCount = 0;
 
     async function setupCamera() {
       try {
@@ -21,9 +21,9 @@ export default function CameraDetection() {
     }
     setupCamera();
 
-    ws.onopen = () => console.log("✅ Connected to backend WebSocket");
-    ws.onerror = (err) => console.error("❌ WebSocket error:", err);
-    ws.onclose = () => console.warn("⚠️ WebSocket closed");
+    ws.onopen = () => console.log("Connected to backend WebSocket");
+    ws.onerror = (err) => console.error("WebSocket error:", err);
+    ws.onclose = () => console.warn("WebSocket closed");
 
     ws.onmessage = (event) => {
       const { bbox, keypoints } = JSON.parse(event.data);
@@ -64,7 +64,11 @@ export default function CameraDetection() {
       ws.send(data);
     }, 100); // video ~10FPS, sending ~1FPS effective
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      ws.close();
+    }
+    // eslint-disable next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
